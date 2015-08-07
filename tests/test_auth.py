@@ -132,6 +132,21 @@ class TestAuth(util.TestCase):
         # config = auth.CONF['eom:auth']
         # config['auth_url'] = self.runtime_url
 
+    @mock.patch('redis.ConnectionPool')
+    @mock.patch('redis.Redis')
+    def test_get_auth_redis_client(self, mock_redis, mock_pool):
+        # import pdb; pdb.set_trace()
+        pool_mock = mock.Mock()
+        redis_mock = mock.Mock()
+        mock_pool.return_value = pool_mock
+        mock_redis.return_value = redis_mock
+        auth.get_auth_redis_client()
+
+        self.assertEqual(
+            redis_mock,
+            auth.get_auth_redis_client()
+        )
+
     def test_cache_key(self):
         value_input = ('1', '2', '3', '4')
         value_output = "(1,2,3,4)"
