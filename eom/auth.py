@@ -396,7 +396,11 @@ def _get_access_info(redis_client, url, tenant, token, blacklist_ttl,
     # Check if we failed to get it from the cache and
     # retrieve from keystone instead
     if access_info is None:
-        LOG.debug('Failed to retrieve token from cache. Trying Keystone')
+        LOG.debug(
+            'Failed to retrieve token {0} from cache. Trying Keystone'.format(
+                token
+            )
+        )
         access_info = _retrieve_data_from_keystone(redis_client,
                                                    url,
                                                    tenant,
@@ -581,7 +585,11 @@ def wrap(app, redis_client):
 
             else:
                 # Validation failed for some reason, just error out as a 401
-                LOG.error(_('Auth Token validation failed.'))
+                LOG.error(
+                    'Auth Token validation failed for {0}.'.format(
+                        token
+                    )
+                )
                 return _http_unauthorized(start_response)
         except (KeyError, LookupError):
             # Header failure, error out with 412
